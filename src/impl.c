@@ -29,16 +29,14 @@ void impl(int N, int step, double *p) {
   int length = N - 1;
   int align = length - length % 4;
 
-  int align_i = length - length % 4;
-
   for (int k = 0; k < step; k++) {
 #pragma omp parallel for num_threads(4)
-    for (int i = 1; i < align_i + 1; i += 4) {
+    for (int i = 1; i < align + 1; i += 4) {
       for (int j = 1; j < align + 1; j += 4) {
         do_block(p, p_next, i, j, N);
       }
     }
-    for (int i = align_i + 1; i < N - 1; i++) {
+    for (int i = align + 1; i < N - 1; i++) {
       for (int j = 1; j < N - 1; j++) {
         p_next[i * N + j] = (p[(i - 1) * N + j] + p[(i + 1) * N + j] +
                              p[i * N + j + 1] + p[i * N + j - 1]) /
